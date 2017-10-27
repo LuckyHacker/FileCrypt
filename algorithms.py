@@ -11,24 +11,26 @@ class AESCipher:
     def __init__(self, key, src_filepath, dst_filepath):
         self.src_filepath = src_filepath
         self.dst_filepath = dst_filepath
-        self.bs = 32
+        self.bs = AES.block_size
         self.key = hashlib.sha256(key.encode()).digest()
 
     def encrypt(self):
         with open(self.src_filepath, "rb") as f:
-            raw = str(self._pad(f.read()), "latin-1")
-        iv = Random.new().read(AES.block_size)
+            plaintext_base64 = base64.b64encode(f.read())
+            raw = self._pad(str(plaintext_base64, "latin-1"))
+        iv = Random.new().read(self.bs)
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         with open(self.dst_filepath, "wb") as f:
-            f.write(iv + cipher.encrypt(raw))
+            f.write(iv + cipher.encrypt(bytes(raw, "latin-1")))
 
     def decrypt(self):
         with open(self.src_filepath, "rb") as f:
-            enc = str(f.read(), "latin-1")
-        iv = enc[:AES.block_size]
+            enc = f.read()
+        iv = enc[:self.bs]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         with open(self.dst_filepath, "wb") as f:
-            f.write(self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('latin-1'))
+            decrypted_base64 = cipher.decrypt(enc[self.bs:])
+            f.write(base64.b64decode(bytes(self._unpad(str(decrypted_base64, "latin-1")), "latin-1")))
 
     def _pad(self, s):
         return s + (self.bs - len(s) % self.bs) * chr(self.bs - len(s) % self.bs)
@@ -36,7 +38,7 @@ class AESCipher:
     @staticmethod
     def _unpad(s):
         return s[:-ord(s[len(s)-1:])]
-
+        
 
 class CryptCipher:
 
