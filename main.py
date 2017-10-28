@@ -53,6 +53,9 @@ class MainWindow:
         self.dst_pathlabel.pack()
 
         # Insert password
+        passwd_label = Label(self.root)
+        passwd_label.config(text="Enter secret key:")
+        passwd_label.pack(pady=10)
         self.password_entry = Entry(self.root, show="*", width=15)
         self.password_entry.pack()
 
