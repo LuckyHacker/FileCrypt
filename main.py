@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 import algorithms
+import tkinter.messagebox
 
 class MainWindow:
 
@@ -14,7 +15,7 @@ class MainWindow:
     def init_ui(self):
         self.root = Tk()
         self.root.title("FileCrypt")
-        self.root.geometry("300x400")
+        self.root.geometry("300x500")
 
         # Choose cipher
         dropdownHeader1 = Label(self.root)
@@ -65,7 +66,7 @@ class MainWindow:
 
         # Status label
         self.status_label = Label(self.root)
-        self.status_label.config(text="status: idle")
+        self.status_label.config(text="Status: idle")
         self.status_label.pack(pady=10)
 
         self.root.mainloop()
@@ -84,26 +85,47 @@ class MainWindow:
 
     def start(self):
         self.secretkey = self.password_entry.get()
-        self.status("status: processing")
+        self.status("Status: processing")
         if self.cipher.get() == "AES":
-            if self.method.get() == "Encrypt":
-                algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
-            else:
-                algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
+            while True:
+                try:
+                    if self.method.get() == "Encrypt":
+                        algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                    else:
+                        algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
+                    break
+                except FileNotFoundError:
+                    tkinter.messagebox.showinfo("Error", "Please choose a file to encrypt/decrypt and the saving location.")
+                    self.status("Status: idle")
+                    return
 
         elif self.cipher.get() == "Crypt":
-            if self.method.get() == "Encrypt":
-                algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
-            else:
-                algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
+            while True:
+                try:
+                    if self.method.get() == "Encrypt":
+                        algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                    else:
+                        algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
+                    break
+                except FileNotFoundError:
+                    tkinter.messagebox.showinfo("Error", "Please choose a file to encrypt/decrypt and the saving location.")
+                    self.status("Status: idle")
+                    return
 
         elif self.cipher.get() == "Blowfish":
-            if self.method.get() == "Encrypt":
-                algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
-            else:
-                algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
-
-        self.status("status: done")
+            while True:
+                try:
+                    if self.method.get() == "Encrypt":
+                        algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                    else:
+                        algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
+                    break
+                except FileNotFoundError:
+                    tkinter.messagebox.showinfo("Error", "Please choose a file to encrypt/decrypt and the saving location.")
+                    self.status("Status: idle")
+                    return
+                
+        self.status("Status: done")
 
 if __name__ == "__main__":
-MainWindow()
+    MainWindow()
