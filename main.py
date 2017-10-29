@@ -13,7 +13,8 @@ class MainWindow:
     def init_ui(self):
         self.root = Tk()
         self.root.title("ACB crypting machine")
-        self.root.geometry("600x400+350+70")
+        self.root.geometry("300x400")
+
         #self.button = Button(self.root, text = 'Press me', command = self.Call)
         #self.button.pack()
 
@@ -34,7 +35,7 @@ class MainWindow:
         w = OptionMenu(*(self.root, variable) + tuple(Options))
         w.pack(ipadx=10, pady=10)
 
-        #CHECKBOXES
+        #RADIOBUTTON
         checkboxHeader = Label(self.root)
         checkboxHeader.config(text="Do you want to decrypt, encrypt or both?")
         checkboxHeader.pack()
@@ -50,24 +51,30 @@ class MainWindow:
         browseHeader = Label(self.root)
         browseHeader.config(text="Choose file to encrypt/decrypt:")
         browseHeader.pack(pady=10)
-        self.browsebutton = Button(self.root, text="Browse", command=self.Browsefunc)
+        self.browsebutton = Button(self.root, text="Browse", command = lambda: self.Browsefunc(self.src_pathlabel))
         self.browsebutton.pack(ipadx=10)
+        self.src_pathlabel = Label(self.root)
+        self.src_pathlabel.pack()
 
-        self.root.mainloop()
-
-    def Browsefunc(self):
-        pathHeader = Label(self.root)
-        pathHeader.config(text="Chosen file:")
-        pathHeader.pack()
-        #FILE PATH
-        filename = filedialog.askopenfilename()
-        self.pathlabel = Label(self.root)
-        self.pathlabel.config(text=filename)
-        self.pathlabel.pack()
+        browseHeader2 = Label(self.root)
+        browseHeader2.config(text="Choose location to save:")
+        browseHeader2.pack(pady=10)
+        self.browsebutton2 = Button(self.root, text="Browse", command = lambda: self.Browsefunc(self.dst_pathlabel))
+        self.browsebutton2.pack(ipadx=10)
+        self.dst_pathlabel = Label(self.root)
+        self.dst_pathlabel.pack()
 
         #START BUTTON
         self.startbutton = Button(self.root, text="Start!")
         self.startbutton.pack(ipadx=15, pady=10)
+
+        self.root.mainloop()
+
+    def Browsefunc(self, label):
+        #FILE PATH
+        filename = filedialog.askopenfilename()
+        label.config(text=filename)
+
 
     def Call(self):
         lab = Label(self.root, text = 'You pressed\nthe button')
