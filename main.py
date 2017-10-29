@@ -15,11 +15,11 @@ class MainWindow:
     def init_ui(self):
         self.root = Tk()
         self.root.title("FileCrypt")
-        self.root.geometry("300x500")
+        self.root.geometry("300x480")
 
         # Choose cipher
         dropdownHeader1 = Label(self.root)
-        dropdownHeader1.config(text="Choose cipher:")
+        dropdownHeader1.config(text="Choose cipher:", font=("Calibri", 9, "bold"))
         dropdownHeader1.pack()
         self.cipher = StringVar(self.root)
         self.cipher.set(self.cipher_options[0])
@@ -28,7 +28,7 @@ class MainWindow:
 
         # Choose method
         dropdownHeader2 = Label(self.root)
-        dropdownHeader2.config(text="Choose method:")
+        dropdownHeader2.config(text="Choose method:", font=("Calibri", 9, "bold"))
         dropdownHeader2.pack()
         self.method = StringVar(self.root)
         self.method.set(self.method_options[0])
@@ -37,7 +37,7 @@ class MainWindow:
 
         # Open file
         browseHeader = Label(self.root)
-        browseHeader.config(text="Choose file to encrypt/decrypt:")
+        browseHeader.config(text="Choose file to encrypt/decrypt:", font=("Calibri", 9, "bold"))
         browseHeader.pack(pady=10)
         self.browsebutton = Button(self.root, text="Browse", command = lambda: self.BrowseOpen(self.src_pathlabel))
         self.browsebutton.pack(ipadx=10)
@@ -46,7 +46,7 @@ class MainWindow:
 
         # Save file
         browseHeader2 = Label(self.root)
-        browseHeader2.config(text="Choose location to save:")
+        browseHeader2.config(text="Choose location to save:", font=("Calibri", 9, "bold"))
         browseHeader2.pack(pady=10)
         self.browsebutton2 = Button(self.root, text="Browse", command = lambda: self.BrowseSave(self.dst_pathlabel))
         self.browsebutton2.pack(ipadx=10)
@@ -55,7 +55,7 @@ class MainWindow:
 
         # Insert password
         passwd_label = Label(self.root)
-        passwd_label.config(text="Enter secret key:")
+        passwd_label.config(text="Enter secret key:", font=("Calibri", 9, "bold"))
         passwd_label.pack(pady=10)
         self.password_entry = Entry(self.root, show="*", width=15)
         self.password_entry.pack()
@@ -85,6 +85,9 @@ class MainWindow:
 
     def start(self):
         self.secretkey = self.password_entry.get()
+        if len(self.secretkey) == 0:
+            tkinter.messagebox.showinfo("Error", "Please enter a secret key.")
+            return
         self.status("Status: processing")
         if self.cipher.get() == "AES":
             while True:
@@ -124,7 +127,7 @@ class MainWindow:
                     tkinter.messagebox.showinfo("Error", "Please choose a file to encrypt/decrypt and the saving location.")
                     self.status("Status: idle")
                     return
-                
+
         self.status("Status: done")
 
 if __name__ == "__main__":
