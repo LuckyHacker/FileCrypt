@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import filedialog
-from sys import platform
 import algorithms
 import tkinter.messagebox
 import os
@@ -10,6 +9,7 @@ class MainWindow:
     def __init__(self):
         self.src_filepath = ""
         self.dst_filepath = ""
+        self.secretkey = ""
         self.cipher_options = ["AES", "Crypt", "Blowfish"]
         self.method_options = ["Encrypt", "Decrypt"]
         self.init_ui()
@@ -62,6 +62,11 @@ class MainWindow:
         self.password_entry = Entry(self.root, show="*", width=15)
         self.password_entry.pack()
 
+        self.delete_src = IntVar()
+        if os.name == "posix":
+            c = Checkbutton(self.root, text="Delete source file after operation?", variable=self.delete_src)
+            c.pack()
+
         # Start
         self.startbutton = Button(self.root, text="Start!", command = self.start)
         self.startbutton.pack(ipadx=15, pady=10)
@@ -91,56 +96,31 @@ class MainWindow:
             tkinter.messagebox.showinfo("Error", "Please enter a secret key.")
             return
         self.status("Status: processing")
-        if self.cipher.get() == "AES":
-            while True:
-                try:
-                    if self.method.get() == "Encrypt":
-                        algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
-                        if platform == "linux" or platform == "linux2":
-                            os.system("shred --remove {}".format(self.src_filepath))
-                        else:
-                            continue
-                    else:
-                        algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
-                    break
-                except FileNotFoundError:
-                    tkinter.messagebox.showinfo("Error", "Please choose a file to encrypt/decrypt and the saving location.")
-                    self.status("Status: idle")
-                    return
+        try:
+            if self.cipher.get() == "AES":
+                if self.method.get() == "Encrypt":
+                    algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                else:
+                    algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
 
-        elif self.cipher.get() == "Crypt":
-            while True:
-                try:
-                    if self.method.get() == "Encrypt":
-                        algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
-                        if platform == "linux" or platform == "linux2":
-                            os.system("shred --remove {}".format(self.src_filepath))
-                        else:
-                            continue
-                    else:
-                        algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
-                    break
-                except FileNotFoundError:
-                    tkinter.messagebox.showinfo("Error", "Please choose a file to encrypt/decrypt and the saving location.")
-                    self.status("Status: idle")
-                    return
+            elif self.cipher.get() == "Crypt":
+                if self.method.get() == "Encrypt":
+                    algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                else:
+                    algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
 
-        elif self.cipher.get() == "Blowfish":
-            while True:
-                try:
-                    if self.method.get() == "Encrypt":
-                        algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
-                        if platform == "linux" or platform == "linux2":
-                            os.system("shred --remove {}".format(self.src_filepath))
-                        else:
-                            continue
-                    else:
-                        algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
-                    break
-                except FileNotFoundError:
-                    tkinter.messagebox.showinfo("Error", "Please choose a file to encrypt/decrypt and the saving location.")
-                    self.status("Status: idle")
-                    return
+            elif self.cipher.get() == "Blowfish":
+                if self.method.get() == "Encrypt":
+                    algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                else:
+                    algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
+        except FileNotFoundError:
+            tkinter.messagebox.showinfo("Error", "Please choose a file to encrypt/decrypt and the saving location.")
+            self.status("Status: idle")
+            return
+
+        if self.delete_src.get() == 1:
+            os.system("shred --remove {}".format(self.src_filepath))
 
         self.status("Status: done")
 
