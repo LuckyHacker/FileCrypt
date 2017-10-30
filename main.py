@@ -1,7 +1,9 @@
 from tkinter import *
 from tkinter import filedialog
+from sys import platform
 import algorithms
 import tkinter.messagebox
+import os
 
 class MainWindow:
 
@@ -94,6 +96,10 @@ class MainWindow:
                 try:
                     if self.method.get() == "Encrypt":
                         algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                        if platform == "linux" or platform == "linux2":
+                            os.system("shred --remove {}".format(self.src_filepath))
+                        else:
+                            continue
                     else:
                         algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
                     break
@@ -107,6 +113,10 @@ class MainWindow:
                 try:
                     if self.method.get() == "Encrypt":
                         algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                        if platform == "linux" or platform == "linux2":
+                            os.system("shred --remove {}".format(self.src_filepath))
+                        else:
+                            continue
                     else:
                         algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
                     break
@@ -120,6 +130,10 @@ class MainWindow:
                 try:
                     if self.method.get() == "Encrypt":
                         algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
+                        if platform == "linux" or platform == "linux2":
+                            os.system("shred --remove {}".format(self.src_filepath))
+                        else:
+                            continue
                     else:
                         algorithms.BlowfishCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
                     break
