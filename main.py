@@ -10,7 +10,7 @@ class MainWindow:
         self.src_filepath = ""
         self.dst_filepath = ""
         self.secretkey = ""
-        self.cipher_options = ["AES", "Crypt", "Blowfish"]
+        self.cipher_options = ["AES", "ShuffleXOR", "Blowfish"]
         self.method_options = ["Encrypt", "Decrypt"]
         self.init_ui()
 
@@ -103,7 +103,7 @@ class MainWindow:
                 else:
                     algorithms.AESCipher(self.secretkey, self.src_filepath, self.dst_filepath).decrypt()
 
-            elif self.cipher.get() == "Crypt":
+            elif self.cipher.get() == "ShuffleXOR":
                 if self.method.get() == "Encrypt":
                     algorithms.CryptCipher(self.secretkey, self.src_filepath, self.dst_filepath).encrypt()
                 else:
